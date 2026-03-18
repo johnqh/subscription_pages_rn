@@ -1,0 +1,26 @@
+{
+  "name": "@sudobility/subscription_pages_rn",
+  "version": "0.0.1",
+  "description": "Subscription page components for React Native applications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "bunx tsc -p tsconfig.build.json",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-native": ">=0.74",
+    "@sudobility/subscription_lib": "^0.0.25",
+    "@sudobility/subscription-components-rn": "^1.0.0",
+    "@sudobility/types": "^1.9.58"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.5.0",
+    "react": "^18.2.0",
+    "react-native": "^0.81.0"
+  },
+  "publishConfig": { "access": "public" },
+  "license": "BUSL-1.1"
+}
