@@ -1,26 +1,45 @@
 {
   "name": "@sudobility/subscription_pages_rn",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Subscription page components for React Native applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "bunx tsc -p tsconfig.build.json",
-    "typecheck": "bunx tsc --noEmit"
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "eslint . --ext ts,tsx --ignore-pattern dist --ignore-pattern node_modules --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --ignore-pattern dist --ignore-pattern node_modules --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
   },
   "peerDependencies": {
     "react": ">=18",
     "react-native": ">=0.74",
     "@sudobility/subscription_lib": "^0.0.25",
-    "@sudobility/subscription-components-rn": "^1.0.0",
+    "@sudobility/subscription-components-rn": "^1.0.1",
     "@sudobility/types": "^1.9.58"
   },
   "devDependencies": {
+    "@sudobility/subscription-components-rn": "^1.0.1",
+    "@sudobility/subscription_lib": "^0.0.25",
+    "@sudobility/types": "^1.9.58",
     "@types/react": "^18.2.0",
     "typescript": "^5.5.0",
     "react": "^18.2.0",
-    "react-native": "^0.81.0"
+    "react-native": "^0.81.0",
+    "@eslint/js": "^9.38.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.4.0",
+    "prettier": "^3.6.2"
   },
-  "publishConfig": { "access": "public" },
-  "license": "BUSL-1.1"
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "BUSL-1.1",
+  "type": "module"
 }

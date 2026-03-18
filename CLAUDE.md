@@ -16,6 +16,7 @@ React Native page components for subscription management. Provides ready-to-use 
 ```
 subscription_pages_rn/
 ├── package.json
+├── bun.lock
 ├── tsconfig.json              # Base TS config (strict, declarations, outDir: dist/)
 ├── tsconfig.build.json        # Build config (extends base, excludes tests)
 └── src/
@@ -56,9 +57,10 @@ bun run typecheck    # TypeScript check (no emit)
 
 - **RN-only: userId is required** -- no anonymous/logged-out state. Users are always authenticated on mobile.
 - **Uses subscription_lib hooks directly** -- pages call `usePackagesByDuration`, `useAllOfferings`, `useOfferingPackages`, `useUserSubscription`.
-- **Uses subscription-components-rn for UI** -- `SubscriptionLayout`, `SegmentedControl`, `SubscriptionTile`, `SubscriptionFooter` from the shared component library.
-- **Maps SubscriptionPackage to RnSubscriptionProduct** -- internal `mapToRnProduct()` converts subscription_lib types to the component library's expected `SubscriptionProduct` shape.
-- **RN StyleSheet.create for page-level styling** -- status banners, loading/error states, overlays use plain React Native styles.
+- **Uses subscription-components-rn for UI** -- `SubscriptionLayout` (with `currentStatus`, `aboveProducts`, `footerContent`), `SegmentedControl`, `SubscriptionTile` (individual props: `id`, `title`, `price`, `features`, etc.), `SubscriptionFooter`.
+- **Passes individual props to SubscriptionTile** -- subscription_lib `SubscriptionPackage` fields are mapped directly to tile props (`id`, `title`, `price`, `periodLabel`, `features`, `isCurrentPlan`). Uses `getPeriodLabel()` helper to convert period strings to display labels.
+- **SubscriptionLayout handles status display** -- current subscription status is passed via `currentStatus` prop (with `activeContent.title` and `activeContent.fields`) instead of custom StyleSheet banner.
+- **RN StyleSheet.create for page-level styling** -- loading/error states and purchasing overlays use plain React Native styles.
 - **Alert.alert for confirmations** -- cancel subscription and error handling use native alerts.
 - **Linking.openURL for management** -- cancel/manage subscription redirects to the store management URL.
 - **Hooks always called unconditionally** -- `useOfferingPackages` in ByOffer page uses a fallback offerId when 'free' is selected.

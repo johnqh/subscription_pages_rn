@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   Alert,
   Linking,
   StyleSheet,
-  TouchableOpacity,
 } from 'react-native';
 import type { SubscriptionPeriod } from '@sudobility/types';
 import {
@@ -16,8 +15,6 @@ import {
   refreshSubscription,
   restoreSubscription,
 } from '@sudobility/subscription_lib';
-import type { SubscriptionPackage } from '@sudobility/subscription_lib';
-import type { SubscriptionProduct as RnSubscriptionProduct } from '@sudobility/subscription-components-rn';
 import {
   SubscriptionLayout,
   SegmentedControl,
@@ -42,23 +39,19 @@ export interface SubscriptionByDurationPageProps {
   onRestoreSuccess?: () => void;
 }
 
-function mapToRnProduct(
-  pkg: SubscriptionPackage,
-  features: string[],
-  isCurrent: boolean,
-): RnSubscriptionProduct {
-  return {
-    id: pkg.packageId,
-    title: pkg.name,
-    description: pkg.product?.description,
-    priceString: pkg.product?.priceString ?? 'Free',
-    priceInCents: Math.round((pkg.product?.price ?? 0) * 100),
-    currencyCode: pkg.product?.currency ?? 'USD',
-    period: pkg.product?.period ?? 'monthly',
-    features,
-    isCurrent,
-    rcPackageId: pkg.packageId,
-  };
+function getPeriodLabel(period?: string): string | undefined {
+  switch (period) {
+    case 'weekly':
+      return '/week';
+    case 'monthly':
+      return '/month';
+    case 'quarterly':
+      return '/quarter';
+    case 'yearly':
+      return '/year';
+    default:
+      return undefined;
+  }
 }
 
 export function SubscriptionByDurationPage({
@@ -83,7 +76,8 @@ export function SubscriptionByDurationPage({
     error: subError,
   } = useUserSubscription({ userId, userEmail });
 
-  const [selectedDuration, setSelectedDuration] = useState<SubscriptionPeriod | null>(null);
+  const [selectedDuration, setSelectedDuration] =
+    useState<SubscriptionPeriod | null>(null);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   const isLoading = isLoadingPackages || isLoadingSub;
@@ -95,7 +89,7 @@ export function SubscriptionByDurationPage({
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563eb" />
+        <ActivityIndicator size='large' color='#2563eb' />
         <Text style={styles.loadingText}>Loading plans...</Text>
       </View>
     );
@@ -113,11 +107,18 @@ export function SubscriptionByDurationPage({
     try {
       setIsPurchasing(true);
       const service = getSubscriptionInstance();
-      await service.purchase({ packageId, offeringId, customerEmail: userEmail });
+      await service.purchase({
+        packageId,
+        offeringId,
+        customerEmail: userEmail,
+      });
       await refreshSubscription();
       onPurchaseSuccess?.();
     } catch (err) {
-      Alert.alert('Error', err instanceof Error ? err.message : 'Purchase failed');
+      Alert.alert(
+        'Error',
+        err instanceof Error ? err.message : 'Purchase failed'
+      );
     } finally {
       setIsPurchasing(false);
     }
@@ -134,7 +135,10 @@ export function SubscriptionByDurationPage({
         Alert.alert('No Purchases', 'No previous purchases were found.');
       }
     } catch (err) {
-      Alert.alert('Error', err instanceof Error ? err.message : 'Restore failed');
+      Alert.alert(
+        'Error',
+        err instanceof Error ? err.message : 'Restore failed'
+      );
     } finally {
       setIsPurchasing(false);
     }
@@ -156,72 +160,74 @@ export function SubscriptionByDurationPage({
             Linking.openURL(subscription.managementUrl!);
           },
         },
-      ],
+      ]
     );
   };
 
-  const currentPackages = activeDuration ? packagesByDuration[activeDuration] ?? [] : [];
+  const currentPackages = activeDuration
+    ? (packagesByDuration[activeDuration] ?? [])
+    : [];
   const hasSubscription = subscription?.isActive ?? false;
   const currentPackageId = subscription?.packageId;
 
-  // Build free tile product
-  const freeProduct = mapToRnProduct(
-    { packageId: 'free', name: 'Free', entitlements: [] },
-    freeFeatures,
-    !hasSubscription,
-  );
-
   // Duration segment options
-  const segmentOptions = availableDurations.map((d) => ({
+  const segmentOptions = availableDurations.map(d => ({
     value: d,
     label: d.charAt(0).toUpperCase() + d.slice(1),
   }));
 
   return (
     <View style={styles.container}>
-      {/* Current subscription status */}
-      {hasSubscription && subscription && (
-        <View style={styles.statusBanner}>
-          <Text style={styles.statusTitle}>Current Plan</Text>
-          <Text style={styles.statusDetail}>
-            {subscription.packageId ?? 'Active Subscription'}
-            {subscription.period ? ` (${subscription.period})` : ''}
-          </Text>
-          {subscription.expirationDate && (
-            <Text style={styles.statusExpiry}>
-              {subscription.willRenew ? 'Renews' : 'Expires'}{' '}
-              {subscription.expirationDate.toLocaleDateString()}
-            </Text>
-          )}
-        </View>
-      )}
-
       <SubscriptionLayout
         title={title}
-        direction="vertical"
-        scrollable
-        headerContent={
+        currentStatus={
+          hasSubscription && subscription
+            ? {
+                isActive: true,
+                activeContent: {
+                  title: subscription.packageId ?? 'Active Subscription',
+                  fields: [
+                    ...(subscription.period
+                      ? [{ label: 'Period', value: subscription.period }]
+                      : []),
+                    ...(subscription.expirationDate
+                      ? [
+                          {
+                            label: subscription.willRenew
+                              ? 'Renews'
+                              : 'Expires',
+                            value:
+                              subscription.expirationDate.toLocaleDateString(),
+                          },
+                        ]
+                      : []),
+                  ],
+                },
+              }
+            : undefined
+        }
+        aboveProducts={
           segmentOptions.length > 0 ? (
             <SegmentedControl
               options={segmentOptions}
               value={activeDuration ?? ''}
-              onChange={(value) => setSelectedDuration(value as SubscriptionPeriod)}
+              onChange={value =>
+                setSelectedDuration(value as SubscriptionPeriod)
+              }
             />
           ) : undefined
         }
-        footerContent={
-          <SubscriptionFooter onRestore={handleRestore} />
-        }
+        footerContent={<SubscriptionFooter onRestore={handleRestore} />}
       >
         {/* Free Tile */}
         <SubscriptionTile
-          product={freeProduct}
+          id='free'
+          title='Free'
+          price='Free'
+          features={freeFeatures}
           isSelected={!hasSubscription}
-          onSelect={
-            hasSubscription
-              ? () => handleCancelSubscription()
-              : undefined
-          }
+          isCurrentPlan={!hasSubscription}
+          onSelect={() => handleCancelSubscription()}
           disabled={isPurchasing}
         />
 
@@ -229,18 +235,18 @@ export function SubscriptionByDurationPage({
         {currentPackages.map(({ package: pkg, offerId }) => {
           const features = featuresByPackage[pkg.packageId] ?? [];
           const isCurrent = currentPackageId === pkg.packageId;
-          const product = mapToRnProduct(pkg, features, isCurrent);
 
           return (
             <SubscriptionTile
               key={`${offerId}-${pkg.packageId}`}
-              product={product}
+              id={pkg.packageId}
+              title={pkg.name}
+              price={pkg.product?.priceString ?? 'Free'}
+              periodLabel={getPeriodLabel(pkg.product?.period)}
+              features={features}
               isSelected={isCurrent}
-              onSelect={
-                isCurrent
-                  ? undefined
-                  : () => handlePurchase(pkg.packageId, offerId)
-              }
+              isCurrentPlan={isCurrent}
+              onSelect={() => handlePurchase(pkg.packageId, offerId)}
               disabled={isPurchasing}
             />
           );
@@ -250,7 +256,7 @@ export function SubscriptionByDurationPage({
       {/* Purchasing overlay */}
       {isPurchasing && (
         <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#fff" />
+          <ActivityIndicator size='large' color='#fff' />
           <Text style={styles.overlayText}>Processing...</Text>
         </View>
       )}
@@ -275,31 +281,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#ef4444',
     textAlign: 'center',
-  },
-  statusBanner: {
-    backgroundColor: '#eff6ff',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#bfdbfe',
-  },
-  statusTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#2563eb',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  statusDetail: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#111',
-    marginTop: 2,
-  },
-  statusExpiry: {
-    fontSize: 13,
-    color: '#6b7280',
-    marginTop: 2,
   },
   overlay: {
     position: 'absolute',
