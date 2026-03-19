@@ -7,10 +7,12 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
-import type { SubscriptionPeriod } from '@sudobility/types';
+import { SubscriptionPlatform } from '@sudobility/types';
+import type { SubscriptionPeriod, NetworkClient } from '@sudobility/types';
 import {
   usePackagesByDuration,
   useUserSubscription,
+  useBackendSubscription,
   getSubscriptionInstance,
   refreshSubscription,
   restoreSubscription,
@@ -21,6 +23,7 @@ import {
   SubscriptionTile,
   SubscriptionFooter,
 } from '@sudobility/subscription-components-rn';
+import { CrossPlatformSubscriptionInfo } from '../components/CrossPlatformSubscriptionInfo';
 
 export interface SubscriptionByDurationPageProps {
   /** User ID for subscription lookup (required on RN) */
@@ -37,6 +40,16 @@ export interface SubscriptionByDurationPageProps {
   onPurchaseSuccess?: () => void;
   /** Called after successful restore */
   onRestoreSuccess?: () => void;
+  /** Current platform (required on RN: ios, android, or macos) */
+  currentPlatform?: SubscriptionPlatform;
+  /** Network client for backend subscription fetch */
+  networkClient?: NetworkClient;
+  /** Backend API base URL */
+  baseUrl?: string;
+  /** Auth token for backend API */
+  token?: string;
+  /** Include sandbox purchases */
+  testMode?: boolean;
 }
 
 function getPeriodLabel(period?: string): string | undefined {
@@ -62,6 +75,11 @@ export function SubscriptionByDurationPage({
   title = 'Choose Your Plan',
   onPurchaseSuccess,
   onRestoreSuccess,
+  currentPlatform,
+  networkClient,
+  baseUrl,
+  token,
+  testMode,
 }: SubscriptionByDurationPageProps) {
   const {
     packagesByDuration,
@@ -75,6 +93,22 @@ export function SubscriptionByDurationPage({
     isLoading: isLoadingSub,
     error: subError,
   } = useUserSubscription({ userId, userEmail });
+
+  // Backend subscription for platform detection
+  const hasBackendConfig = !!(networkClient && baseUrl && token && userId);
+  const backendSub = useBackendSubscription(
+    networkClient ?? ({} as NetworkClient),
+    baseUrl ?? '',
+    token ?? '',
+    userId ?? '',
+    { testMode, enabled: hasBackendConfig }
+  );
+
+  const subscriptionPlatform = backendSub.data?.platform ?? null;
+  const isPlatformMatch =
+    !subscriptionPlatform ||
+    !currentPlatform ||
+    subscriptionPlatform === currentPlatform;
 
   const [selectedDuration, setSelectedDuration] =
     useState<SubscriptionPeriod | null>(null);
@@ -99,6 +133,21 @@ export function SubscriptionByDurationPage({
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>{error.message}</Text>
+      </View>
+    );
+  }
+
+  // Cross-platform: show info instead of purchase UI
+  if (!isPlatformMatch && backendSub.data && currentPlatform) {
+    return (
+      <View style={styles.container}>
+        <SubscriptionLayout title={title}>
+          <CrossPlatformSubscriptionInfo
+            backendSubscription={backendSub.data}
+            managementUrl={subscription?.managementUrl}
+            currentPlatform={currentPlatform}
+          />
+        </SubscriptionLayout>
       </View>
     );
   }
@@ -144,24 +193,12 @@ export function SubscriptionByDurationPage({
     }
   };
 
-  const handleCancelSubscription = () => {
+  const openManagementUrl = () => {
     if (!subscription?.managementUrl) {
       Alert.alert('Error', 'Unable to open subscription management.');
       return;
     }
-    Alert.alert(
-      'Cancel Subscription',
-      'You will be redirected to manage your subscription. Are you sure?',
-      [
-        { text: 'No', style: 'cancel' },
-        {
-          text: 'Yes, Manage',
-          onPress: () => {
-            Linking.openURL(subscription.managementUrl!);
-          },
-        },
-      ]
-    );
+    Linking.openURL(subscription.managementUrl);
   };
 
   const currentPackages = activeDuration
@@ -219,19 +256,22 @@ export function SubscriptionByDurationPage({
         }
         footerContent={<SubscriptionFooter onRestore={handleRestore} />}
       >
-        {/* Free Tile */}
+        {/* Free Tile — "Current" badge when no subscription, no CTA */}
         <SubscriptionTile
           id='free'
           title='Free'
           price='Free'
           features={freeFeatures}
-          isSelected={!hasSubscription}
+          isSelected={false}
           isCurrentPlan={!hasSubscription}
-          onSelect={() => handleCancelSubscription()}
+          topBadge={
+            !hasSubscription ? { text: 'Current', color: 'blue' } : undefined
+          }
+          onSelect={() => {}}
           disabled={isPurchasing}
         />
 
-        {/* Paid Tiles */}
+        {/* Paid Tiles — management URL when subscribed, purchase when not */}
         {currentPackages.map(({ package: pkg, offerId }) => {
           const features = featuresByPackage[pkg.packageId] ?? [];
           const isCurrent = currentPackageId === pkg.packageId;
@@ -246,7 +286,11 @@ export function SubscriptionByDurationPage({
               features={features}
               isSelected={isCurrent}
               isCurrentPlan={isCurrent}
-              onSelect={() => handlePurchase(pkg.packageId, offerId)}
+              onSelect={
+                hasSubscription
+                  ? openManagementUrl
+                  : () => handlePurchase(pkg.packageId, offerId)
+              }
               disabled={isPurchasing}
             />
           );

@@ -7,10 +7,13 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
+import { SubscriptionPlatform } from '@sudobility/types';
+import type { NetworkClient } from '@sudobility/types';
 import {
   useAllOfferings,
   useOfferingPackages,
   useUserSubscription,
+  useBackendSubscription,
   getSubscriptionInstance,
   refreshSubscription,
   restoreSubscription,
@@ -21,6 +24,7 @@ import {
   SubscriptionTile,
   SubscriptionFooter,
 } from '@sudobility/subscription-components-rn';
+import { CrossPlatformSubscriptionInfo } from '../components/CrossPlatformSubscriptionInfo';
 
 export interface SubscriptionByOfferPageProps {
   /** User ID for subscription lookup (required on RN) */
@@ -37,6 +41,16 @@ export interface SubscriptionByOfferPageProps {
   onPurchaseSuccess?: () => void;
   /** Called after successful restore */
   onRestoreSuccess?: () => void;
+  /** Current platform (required on RN: ios, android, or macos) */
+  currentPlatform?: SubscriptionPlatform;
+  /** Network client for backend subscription fetch */
+  networkClient?: NetworkClient;
+  /** Backend API base URL */
+  baseUrl?: string;
+  /** Auth token for backend API */
+  token?: string;
+  /** Include sandbox purchases */
+  testMode?: boolean;
 }
 
 function getPeriodLabel(period?: string): string | undefined {
@@ -62,6 +76,11 @@ export function SubscriptionByOfferPage({
   title = 'Choose Your Plan',
   onPurchaseSuccess,
   onRestoreSuccess,
+  currentPlatform,
+  networkClient,
+  baseUrl,
+  token,
+  testMode,
 }: SubscriptionByOfferPageProps) {
   const {
     offerings,
@@ -74,6 +93,22 @@ export function SubscriptionByOfferPage({
     isLoading: isLoadingSub,
     error: subError,
   } = useUserSubscription({ userId, userEmail });
+
+  // Backend subscription for platform detection
+  const hasBackendConfig = !!(networkClient && baseUrl && token && userId);
+  const backendSub = useBackendSubscription(
+    networkClient ?? ({} as NetworkClient),
+    baseUrl ?? '',
+    token ?? '',
+    userId ?? '',
+    { testMode, enabled: hasBackendConfig }
+  );
+
+  const subscriptionPlatform = backendSub.data?.platform ?? null;
+  const isPlatformMatch =
+    !subscriptionPlatform ||
+    !currentPlatform ||
+    subscriptionPlatform === currentPlatform;
 
   const [selectedSegment, setSelectedSegment] = useState<string>('free');
   const [isPurchasing, setIsPurchasing] = useState(false);
@@ -102,6 +137,21 @@ export function SubscriptionByOfferPage({
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>{error.message}</Text>
+      </View>
+    );
+  }
+
+  // Cross-platform: show info instead of purchase UI
+  if (!isPlatformMatch && backendSub.data && currentPlatform) {
+    return (
+      <View style={styles.container}>
+        <SubscriptionLayout title={title}>
+          <CrossPlatformSubscriptionInfo
+            backendSubscription={backendSub.data}
+            managementUrl={subscription?.managementUrl}
+            currentPlatform={currentPlatform}
+          />
+        </SubscriptionLayout>
       </View>
     );
   }
@@ -147,24 +197,12 @@ export function SubscriptionByOfferPage({
     }
   };
 
-  const handleCancelSubscription = () => {
+  const openManagementUrl = () => {
     if (!subscription?.managementUrl) {
       Alert.alert('Error', 'Unable to open subscription management.');
       return;
     }
-    Alert.alert(
-      'Cancel Subscription',
-      'You will be redirected to manage your subscription. Are you sure?',
-      [
-        { text: 'No', style: 'cancel' },
-        {
-          text: 'Yes, Manage',
-          onPress: () => {
-            Linking.openURL(subscription.managementUrl!);
-          },
-        },
-      ]
-    );
+    Linking.openURL(subscription.managementUrl);
   };
 
   const hasSubscription = subscription?.isActive ?? false;
@@ -223,18 +261,21 @@ export function SubscriptionByOfferPage({
         footerContent={<SubscriptionFooter onRestore={handleRestore} />}
       >
         {showFree ? (
-          /* Free Tile */
+          /* Free Tile — "Current" badge when no subscription, no CTA */
           <SubscriptionTile
             id='free'
             title='Free'
             price='Free'
             features={freeFeatures}
-            isSelected={!hasSubscription}
+            isSelected={false}
             isCurrentPlan={!hasSubscription}
-            onSelect={() => handleCancelSubscription()}
+            topBadge={
+              !hasSubscription ? { text: 'Current', color: 'blue' } : undefined
+            }
+            onSelect={() => {}}
             disabled={isPurchasing}
           />
-        ) : /* Offering Packages */
+        ) : /* Offering Packages — management URL when subscribed */
         isLoadingPkgs ? (
           <View style={styles.center}>
             <ActivityIndicator size='small' color='#2563eb' />
@@ -254,7 +295,11 @@ export function SubscriptionByOfferPage({
                 features={features}
                 isSelected={isCurrent}
                 isCurrentPlan={isCurrent}
-                onSelect={() => handlePurchase(pkg.packageId, selectedSegment)}
+                onSelect={
+                  hasSubscription
+                    ? openManagementUrl
+                    : () => handlePurchase(pkg.packageId, selectedSegment)
+                }
                 disabled={isPurchasing}
               />
             );
