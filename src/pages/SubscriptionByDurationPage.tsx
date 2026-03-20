@@ -274,7 +274,9 @@ export function SubscriptionByDurationPage({
         {/* Paid Tiles — management URL when subscribed, purchase when not */}
         {currentPackages.map(({ package: pkg, offerId }) => {
           const features = featuresByPackage[pkg.packageId] ?? [];
-          const isCurrent = currentPackageId === pkg.packageId;
+          const isCurrent =
+            currentPackageId === pkg.packageId &&
+            subscription?.offeringId === offerId;
 
           return (
             <SubscriptionTile

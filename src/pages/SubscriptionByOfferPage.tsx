@@ -283,7 +283,9 @@ export function SubscriptionByOfferPage({
         ) : (
           offeringPackages.map(pkg => {
             const features = featuresByPackage[pkg.packageId] ?? [];
-            const isCurrent = currentPackageId === pkg.packageId;
+            const isCurrent =
+              currentPackageId === pkg.packageId &&
+              subscription?.offeringId === selectedSegment;
 
             return (
               <SubscriptionTile
