@@ -251,11 +251,13 @@ export function SubscriptionByOfferPage({
         }
         aboveProducts={
           segmentOptions.length > 1 ? (
-            <SegmentedControl
-              options={segmentOptions}
-              value={selectedSegment}
-              onChange={setSelectedSegment}
-            />
+            <View style={styles.segmentWrapper}>
+              <SegmentedControl
+                options={segmentOptions}
+                value={selectedSegment}
+                onChange={setSelectedSegment}
+              />
+            </View>
           ) : undefined
         }
         footerContent={<SubscriptionFooter onRestore={handleRestore} />}
@@ -322,6 +324,7 @@ export function SubscriptionByOfferPage({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
+  segmentWrapper: { marginBottom: 16 },
   center: {
     flex: 1,
     justifyContent: 'center',
