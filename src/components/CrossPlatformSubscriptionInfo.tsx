@@ -5,8 +5,10 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
-import type { SubscriptionPlatform } from '@sudobility/types';
-import type { BackendSubscriptionResult } from '@sudobility/subscription_lib';
+import type {
+  SubscriptionPlatform,
+  BackendSubscriptionResult,
+} from '@sudobility/types';
 
 const PLATFORM_NAMES: Record<string, string> = {
   web: 'Web',
