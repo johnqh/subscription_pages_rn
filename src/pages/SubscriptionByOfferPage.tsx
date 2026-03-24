@@ -18,9 +18,9 @@ import {
   refreshSubscription,
   restoreSubscription,
 } from '@sudobility/subscription_lib';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import {
   SubscriptionLayout,
-  SegmentedControl,
   SubscriptionTile,
   SubscriptionFooter,
 } from '@sudobility/subscription-components-rn';
@@ -209,13 +209,14 @@ export function SubscriptionByOfferPage({
   const currentPackageId = subscription?.packageId;
 
   // Segment options: Free + each offering
-  const segmentOptions = [
-    { value: 'free', label: 'Free' },
-    ...offerings.map(o => ({
-      value: o.offerId,
-      label: o.offerId.charAt(0).toUpperCase() + o.offerId.slice(1),
-    })),
+  const segmentValues = ['free', ...offerings.map(o => o.offerId)];
+  const segmentLabels = [
+    'Free',
+    ...offerings.map(
+      o => o.offerId.charAt(0).toUpperCase() + o.offerId.slice(1)
+    ),
   ];
+  const selectedIndex = segmentValues.indexOf(selectedSegment);
 
   const showFree = selectedSegment === 'free';
 
@@ -250,12 +251,15 @@ export function SubscriptionByOfferPage({
             : undefined
         }
         aboveProducts={
-          segmentOptions.length > 1 ? (
+          segmentLabels.length > 1 ? (
             <View style={styles.segmentWrapper}>
               <SegmentedControl
-                options={segmentOptions}
-                value={selectedSegment}
-                onChange={setSelectedSegment}
+                values={segmentLabels}
+                selectedIndex={selectedIndex >= 0 ? selectedIndex : 0}
+                onChange={event => {
+                  const idx = event.nativeEvent.selectedSegmentIndex;
+                  setSelectedSegment(segmentValues[idx] ?? 'free');
+                }}
               />
             </View>
           ) : undefined

@@ -17,9 +17,9 @@ import {
   refreshSubscription,
   restoreSubscription,
 } from '@sudobility/subscription_lib';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import {
   SubscriptionLayout,
-  SegmentedControl,
   SubscriptionTile,
   SubscriptionFooter,
 } from '@sudobility/subscription-components-rn';
@@ -208,10 +208,12 @@ export function SubscriptionByDurationPage({
   const currentPackageId = subscription?.packageId;
 
   // Duration segment options
-  const segmentOptions = availableDurations.map(d => ({
-    value: d,
-    label: d.charAt(0).toUpperCase() + d.slice(1),
-  }));
+  const segmentLabels = availableDurations.map(
+    d => d.charAt(0).toUpperCase() + d.slice(1)
+  );
+  const selectedIndex = activeDuration
+    ? availableDurations.indexOf(activeDuration)
+    : 0;
 
   return (
     <View style={styles.container}>
@@ -244,13 +246,16 @@ export function SubscriptionByDurationPage({
             : undefined
         }
         aboveProducts={
-          segmentOptions.length > 0 ? (
+          segmentLabels.length > 0 ? (
             <SegmentedControl
-              options={segmentOptions}
-              value={activeDuration ?? ''}
-              onChange={value =>
-                setSelectedDuration(value as SubscriptionPeriod)
-              }
+              values={segmentLabels}
+              selectedIndex={selectedIndex >= 0 ? selectedIndex : 0}
+              onChange={event => {
+                const idx = event.nativeEvent.selectedSegmentIndex;
+                setSelectedDuration(
+                  availableDurations[idx] as SubscriptionPeriod
+                );
+              }}
             />
           ) : undefined
         }
