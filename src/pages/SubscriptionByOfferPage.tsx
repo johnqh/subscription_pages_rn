@@ -241,11 +241,22 @@ export function SubscriptionByOfferPage({
                               ? 'Renews'
                               : 'Expires',
                             value:
-                              subscription.expirationDate.toLocaleDateString(),
+                              subscription.expirationDate.toLocaleDateString(
+                                undefined,
+                                { dateStyle: 'long' }
+                              ),
                           },
                         ]
                       : []),
                   ],
+                  ...(subscription.platform
+                    ? {
+                        platform: {
+                          label: 'Subscription Platform',
+                          value: subscription.platform,
+                        },
+                      }
+                    : {}),
                 },
               }
             : undefined
