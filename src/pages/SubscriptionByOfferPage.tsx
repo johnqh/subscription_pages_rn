@@ -229,7 +229,7 @@ export function SubscriptionByOfferPage({
             ? {
                 isActive: true,
                 activeContent: {
-                  title: subscription.packageId ?? 'Active Subscription',
+                  title: subscription.productId ?? 'Active Subscription',
                   fields: [
                     ...(subscription.period
                       ? [{ label: 'Period', value: subscription.period }]
