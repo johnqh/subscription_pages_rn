@@ -7,6 +7,7 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
+import { colors } from '@sudobility/design';
 import { SubscriptionPlatform } from '@sudobility/types';
 import type { NetworkClient } from '@sudobility/types';
 import {
@@ -127,7 +128,7 @@ export function SubscriptionByOfferPage({
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size='large' color='#2563eb' />
+        <ActivityIndicator size='large' color={colors.raw.blue[600]} />
         <Text style={styles.loadingText}>Loading plans...</Text>
       </View>
     );
@@ -295,7 +296,7 @@ export function SubscriptionByOfferPage({
         ) : /* Offering Packages — management URL when subscribed */
         isLoadingPkgs ? (
           <View style={styles.center}>
-            <ActivityIndicator size='small' color='#2563eb' />
+            <ActivityIndicator size='small' color={colors.raw.blue[600]} />
           </View>
         ) : (
           offeringPackages.map(pkg => {
@@ -329,7 +330,7 @@ export function SubscriptionByOfferPage({
       {/* Purchasing overlay */}
       {isPurchasing && (
         <View style={styles.overlay}>
-          <ActivityIndicator size='large' color='#fff' />
+          <ActivityIndicator size='large' color={colors.raw.neutral[0]} />
           <Text style={styles.overlayText}>Processing...</Text>
         </View>
       )}
@@ -338,7 +339,7 @@ export function SubscriptionByOfferPage({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: colors.raw.neutral[0] },
   segmentWrapper: { marginBottom: 16 },
   center: {
     flex: 1,
@@ -349,11 +350,11 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.raw.neutral[500],
   },
   errorText: {
     fontSize: 14,
-    color: '#ef4444',
+    color: colors.raw.red[500],
     textAlign: 'center',
   },
   overlay: {
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   overlayText: {
-    color: '#fff',
+    color: colors.raw.neutral[0],
     marginTop: 12,
     fontSize: 16,
     fontWeight: '600',

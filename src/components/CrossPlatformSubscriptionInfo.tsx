@@ -5,6 +5,7 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
+import { colors } from '@sudobility/design';
 import type {
   SubscriptionPlatform,
   BackendSubscriptionResult,
@@ -75,9 +76,9 @@ export function CrossPlatformSubscriptionInfo({
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: '#fbbf24',
+    borderColor: colors.raw.amber[400],
     borderRadius: 12,
-    backgroundColor: '#fffbeb',
+    backgroundColor: colors.raw.amber[50],
     padding: 20,
     alignItems: 'center',
     gap: 12,
@@ -85,29 +86,29 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#111827',
+    color: colors.raw.neutral[900],
   },
   detail: {
     fontSize: 14,
-    color: '#374151',
+    color: colors.raw.neutral[700],
   },
   bold: {
     fontWeight: '600',
   },
   message: {
     fontSize: 14,
-    color: '#92400e',
+    color: colors.raw.amber[800],
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#2563eb',
+    backgroundColor: colors.raw.blue[600],
     borderRadius: 8,
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginTop: 4,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.raw.neutral[0],
     fontSize: 14,
     fontWeight: '600',
   },
