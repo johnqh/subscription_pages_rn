@@ -9,7 +9,7 @@
         "@react-native-segmented-control/segmented-control": "^2.5.7",
         "@sudobility/design": "^1.1.29",
         "@sudobility/subscription-components-rn": "^1.0.6",
-        "@sudobility/subscription_lib": "^0.0.39",
+        "@sudobility/subscription_lib": "^0.0.40",
         "@sudobility/types": "^1.9.61",
         "@tanstack/react-query": "^5.91.2",
         "@types/react": "^18.2.0",
@@ -29,7 +29,7 @@
         "@react-native-segmented-control/segmented-control": ">=2.5.0",
         "@sudobility/design": "^1.1.29",
         "@sudobility/subscription-components-rn": "^1.0.6",
-        "@sudobility/subscription_lib": "^0.0.39",
+        "@sudobility/subscription_lib": "^0.0.40",
         "@sudobility/types": "^1.9.61",
         "react": ">=18",
         "react-native": ">=0.74",
@@ -235,7 +235,7 @@
 
     "@sudobility/subscription-components-rn": ["@sudobility/subscription-components-rn@1.0.6", "", { "peerDependencies": { "@sudobility/components-rn": "^1.0.0", "@sudobility/design": "^1.1.0", "react": "^18.0.0 || ^19.0.0", "react-native": ">=0.72.0", "react-native-purchases": ">=7.0.0" }, "optionalPeers": ["react-native-purchases"] }, "sha512-iJIP32ZuTHillnvQy57uvaSiZdspU0emgMq/NxowxIIC1xFX8ZamobjPQo+AyRMGP0sCTdVYY8S89IgUsB1iwQ=="],
 
-    "@sudobility/subscription_lib": ["@sudobility/subscription_lib@0.0.39", "", { "peerDependencies": { "@revenuecat/purchases-js": "^1.0.0", "@sudobility/types": "^1.9.61", "@tanstack/react-query": "^5.0.0", "react": "^18.0.0 || ^19.0.0", "react-native-purchases": ">=7.0.0" }, "optionalPeers": ["@revenuecat/purchases-js", "@tanstack/react-query", "react-native-purchases"] }, "sha512-sKrGjXueHZTI1UJoxfHlMWBXPMoo+yXEKeBlCmROkzS/nHfqiQGbNOm8DQ+WziETzZx22OcVRIFS8/67l/gnQg=="],
+    "@sudobility/subscription_lib": ["@sudobility/subscription_lib@0.0.40", "", { "peerDependencies": { "@revenuecat/purchases-js": "^1.0.0", "@sudobility/types": "^1.9.61", "@tanstack/react-query": "^5.0.0", "react": "^18.0.0 || ^19.0.0", "react-native-purchases": ">=7.0.0" }, "optionalPeers": ["@revenuecat/purchases-js", "@tanstack/react-query", "react-native-purchases"] }, "sha512-Qe1F5UFrBrKZCAQyD87VtXZ4LZG7Zj1Wff4oWL6OGTpRQSZ13txx4ZIY92+gVMpOitl3YDU2vl/A14AYn9NL5w=="],
 
     "@sudobility/types": ["@sudobility/types@1.9.61", "", {}, "sha512-SODGpstB/iKfK3H/4BvJx/FBcc1h3gutUjGotyxN19VnOfWyzaDoEmW7eyoxOAYhZyXMXagSiii+NIEZvuxKog=="],
 
