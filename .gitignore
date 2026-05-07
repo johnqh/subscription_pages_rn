@@ -9,3 +9,12 @@ dist/
 .env
 .env.local
 .env.merged
+
+# Xcode DerivedData build cache
+.deriveddata/
+
+# Build artifacts (xcarchive, IPA, AAB, etc.)
+app_store/builds/
+
+# App Store API keys
+app_store/.keys/
