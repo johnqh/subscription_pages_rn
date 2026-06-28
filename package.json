@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/subscription_pages_rn",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "Subscription page components for React Native applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,10 +19,10 @@
     "@sudobility/subscription_lib": "^0.0.44",
     "@sudobility/subscription-components-rn": "^1.0.6",
     "@sudobility/types": "^1.9.62",
-    "@sudobility/design": "^1.1.34"
+    "@sudobility/design": "^1.1.35"
   },
   "devDependencies": {
-    "@sudobility/design": "^1.1.34",
+    "@sudobility/design": "^1.1.35",
     "@eslint/js": "^9.38.0",
     "@react-native-segmented-control/segmented-control": "^2.5.7",
     "@sudobility/subscription-components-rn": "^1.0.6",
