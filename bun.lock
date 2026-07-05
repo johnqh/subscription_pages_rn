@@ -7,7 +7,7 @@
       "devDependencies": {
         "@eslint/js": "^9.38.0",
         "@react-native-segmented-control/segmented-control": "^2.5.7",
-        "@sudobility/design": "^1.1.45",
+        "@sudobility/design": "^1.1.46",
         "@sudobility/subscription-components-rn": "^1.0.6",
         "@sudobility/subscription_lib": "^0.0.44",
         "@sudobility/types": "^1.9.62",
@@ -27,7 +27,7 @@
       },
       "peerDependencies": {
         "@react-native-segmented-control/segmented-control": ">=2.5.0",
-        "@sudobility/design": "^1.1.45",
+        "@sudobility/design": "^1.1.46",
         "@sudobility/subscription-components-rn": "^1.0.6",
         "@sudobility/subscription_lib": "^0.0.44",
         "@sudobility/types": "^1.9.62",
@@ -231,7 +231,7 @@
 
     "@sudobility/components-rn": ["@sudobility/components-rn@1.0.29", "", { "peerDependencies": { "@sudobility/design": "^1.1.23", "@sudobility/types": "^1.9.58", "class-variance-authority": "^0.7.0", "clsx": "^2.0.0", "nativewind": ">=4.0.0", "react": "^18.0.0 || ^19.0.0", "react-native": ">=0.72.0", "react-native-gesture-handler": ">=2.0.0", "react-native-reanimated": ">=3.0.0", "react-native-safe-area-context": ">=4.0.0", "react-native-svg": ">=13.0.0" } }, "sha512-NEUei02PxS/Iws9yJ0ZjIurXbBeTZwyGV9tIRs5ELglhWD85kj7CvXomMiw0O3ZfBHwpNShlC1tgoZ/RECWvSw=="],
 
-    "@sudobility/design": ["@sudobility/design@1.1.45", "", { "peerDependencies": { "clsx": ">=2.0.0", "tailwind-merge": ">=2.0.0" } }, "sha512-ON3O7jPcgs6d13LJfhMWHSpdaqufNGAyLwsHebUkJ4Finmq5fg9Hjjw5G/NUz5o1mn0llLLz7sB54CXKlRkUvA=="],
+    "@sudobility/design": ["@sudobility/design@1.1.46", "", { "peerDependencies": { "clsx": ">=2.0.0", "tailwind-merge": ">=2.0.0" } }, "sha512-tX0hNtPz6JVx79obiOdWwYczQZIApBBlehpGBFGh5nG1itXwlXVlAkMEQXVRL9UyVGmLSS2/yiKX1DHSjiD2EA=="],
 
     "@sudobility/subscription-components-rn": ["@sudobility/subscription-components-rn@1.0.6", "", { "peerDependencies": { "@sudobility/components-rn": "^1.0.0", "@sudobility/design": "^1.1.0", "react": "^18.0.0 || ^19.0.0", "react-native": ">=0.72.0", "react-native-purchases": ">=7.0.0" }, "optionalPeers": ["react-native-purchases"] }, "sha512-iJIP32ZuTHillnvQy57uvaSiZdspU0emgMq/NxowxIIC1xFX8ZamobjPQo+AyRMGP0sCTdVYY8S89IgUsB1iwQ=="],
 
