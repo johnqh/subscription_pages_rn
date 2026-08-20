@@ -1,5 +1,10 @@
 # subscription_pages_rn - AI Development Guide
 
+> **Git policy — never auto-commit or auto-push.** Leave your work in the working tree.
+> Run `git commit`, `git push`, `gh pr create`, or `scripts/push_all.sh` **only when the user
+> explicitly asks in that turn**. Approval for an earlier change does not carry forward, and
+> finishing a task is not permission to commit it.
+
 ## Overview
 
 React Native page components for subscription management. Provides ready-to-use screens for choosing subscription plans by duration (billing period) or by offer (product catalog). Uses `@sudobility/subscription_lib` hooks for data fetching and `@sudobility/subscription-components-rn` for UI tiles.
@@ -71,3 +76,7 @@ bun run typecheck    # TypeScript check (no emit)
 - **subscription_lib** (`@sudobility/subscription_lib`) -- provides hooks (`usePackagesByDuration`, `useAllOfferings`, `useOfferingPackages`, `useUserSubscription`) and singleton (`getSubscriptionInstance`, `refreshSubscription`, `restoreSubscription`).
 - **subscription-components-rn** (`@sudobility/subscription-components-rn`) -- provides UI components (`SubscriptionTile`, `SubscriptionLayout`, `SegmentedControl`, `SubscriptionFooter`).
 - **subscription_pages** (`@sudobility/subscription_pages`) -- web counterpart of this package.
+
+## Git Workflow
+
+- Do not use feature branches for code changes. Always stay on the current branch.
